@@ -21,5 +21,6 @@ export class CreateTodoDto {
 
   @IsBoolean()
   @IsOptional()
+  @IsNotEmpty()
   completed?: boolean;
 }

@@ -12,11 +12,11 @@ import { Todo } from './entities/todo.entity';
 
 @Injectable()
 export class TodosService {
-  private NAN_ID = 'Id must be a number';
+  private readonly NAN_ID = 'Id must be a number';
 
   constructor(
     @InjectRepository(Todo, 'todosConnection')
-    private todosRepo: Repository<Todo>
+    private readonly todosRepo: Repository<Todo>
   ) {}
 
   async create(createTodoDto: CreateTodoDto) {
