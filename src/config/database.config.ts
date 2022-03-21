@@ -9,6 +9,6 @@ export const TodosDatabaseConfig: TypeOrmModuleOptions = {
   username: process.env.TODOS_DATABASE_USERNAME,
   password: process.env.TODOS_DATABASE_PASSWORD,
   database: process.env.TODOS_DATABASE_NAME,
-  entities: [join(__dirname, '..', 'todos', '*.entity.{js, ts}')],
+  entities: [join(__dirname, '..', 'todos/entities/', '*.entity.{js, ts}')],
   synchronize: true
 };
