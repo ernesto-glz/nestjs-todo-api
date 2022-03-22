@@ -1,14 +1,16 @@
 import { join } from 'path';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
-export const TodosDatabaseConfig: TypeOrmModuleOptions = {
-  name: 'todosConnection',
+export const DatabaseConfig: TypeOrmModuleOptions = {
   type: 'mysql',
-  host: process.env.TODOS_DATABASE_HOST,
-  port: +process.env.TODOS_DATABASE_PORT,
-  username: process.env.TODOS_DATABASE_USERNAME,
-  password: process.env.TODOS_DATABASE_PASSWORD,
-  database: process.env.TODOS_DATABASE_NAME,
-  entities: [join(__dirname, '..', 'todos/entities/', '*.entity.{js, ts}')],
-  synchronize: true
+  host: process.env.DATABASE_HOST,
+  port: +process.env.DATABASE_PORT,
+  username: process.env.DATABASE_USERNAME,
+  password: process.env.DATABASE_PASSWORD,
+  database: process.env.DATABASE_NAME,
+  entities: [
+    join(__dirname, '..', 'todos/entities/', '*.entity.{js, ts}'),
+    join(__dirname, '..', 'users/entities/', '*.entity.{js, ts}')
+  ],
+  synchronize: process.env.NODE_ENV === 'production' ? false : true
 };
