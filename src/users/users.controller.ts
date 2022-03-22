@@ -1,25 +1,27 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
   Patch,
-  Param,
-  Delete,
   ValidationPipe,
-  Res
+  Res,
+  UseGuards
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { Response } from 'express';
+import { AuthGuard } from 'src/shared/auth.guard';
+import { UserDecorator } from './user.decorator';
+import { UpdatePasswordDto } from './dto/update-password.dto';
+import { User } from './entities/user.entity';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body(ValidationPipe) createUserDto: CreateUserDto) {
+  create(@Body(ValidationPipe) createUserDto: CreateUserDto): Promise<User> {
     return this.usersService.signUp(createUserDto);
   }
 
@@ -31,18 +33,17 @@ export class UsersController {
     return this.usersService.signIn(loginUserDto, response);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body(ValidationPipe) updateUserDto: any) {
-    return this.usersService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @Patch('/updatePassword')
+  @UseGuards(new AuthGuard())
+  findOne(
+    @UserDecorator('id') userId: number,
+    @Body(ValidationPipe) updatePasswordDto: UpdatePasswordDto,
+    @Res() response: Response
+  ): Promise<void> {
+    return this.usersService.updatePassword(
+      userId,
+      updatePasswordDto,
+      response
+    );
   }
 }

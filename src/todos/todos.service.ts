@@ -26,7 +26,7 @@ export class TodosService {
     private readonly todosRepo: Repository<Todo>
   ) {}
 
-  async create(createTodoDto: CreateTodoDto, user: User) {
+  async create(createTodoDto: CreateTodoDto, user: User): Promise<Todo> {
     const { title } = createTodoDto;
     const todo = this.todosRepo.create({ ...createTodoDto, user });
 
@@ -42,7 +42,7 @@ export class TodosService {
     return await this.todosRepo.save(todo);
   }
 
-  async findAllByUserId(userId: number) {
+  async findAllByUserId(userId: number): Promise<Todo[]> {
     const todos = await this.todosRepo.find({
       where: { user: { id: userId } },
       relations: ['user']
@@ -57,7 +57,7 @@ export class TodosService {
     return todos;
   }
 
-  async findOne(id: number, userId: number) {
+  async findOne(id: number, userId: number): Promise<Todo> {
     if (isNaN(id)) throw new BadRequestException([this.Responses.ID_NAN]);
 
     const todo = await this.todosRepo.findOne({
@@ -77,7 +77,11 @@ export class TodosService {
     return todo;
   }
 
-  async update(id: number, updateTodoDto: UpdateTodoDto, userId: number) {
+  async update(
+    id: number,
+    updateTodoDto: UpdateTodoDto,
+    userId: number
+  ): Promise<Todo> {
     if (isNaN(id)) throw new BadRequestException([this.Responses.ID_NAN]);
 
     const todo = await this.todosRepo.findOne({
@@ -98,7 +102,7 @@ export class TodosService {
     return await this.todosRepo.findOne({ id });
   }
 
-  async remove(id: number, userId: number) {
+  async remove(id: number, userId: number): Promise<object> {
     if (isNaN(id)) throw new BadRequestException([this.Responses.ID_NAN]);
 
     const todo = await this.todosRepo.findOne({
