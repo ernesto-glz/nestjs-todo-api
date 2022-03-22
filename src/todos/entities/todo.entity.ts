@@ -1,4 +1,4 @@
-import { User } from 'src/users/entities/user.entity';
+import { User } from '../../users/entities/user.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -16,10 +16,10 @@ export class Todo {
   completed: boolean;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: number;
+  createdAt: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  lastUpdated: number;
+  lastUpdated: string;
 
   @ManyToOne(() => User, (user) => user.todos, { onDelete: 'SET NULL' })
   user: User;

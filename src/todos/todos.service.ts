@@ -6,11 +6,11 @@ import {
   UnauthorizedException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { Todo } from './entities/todo.entity';
+import { UserDto } from '../users/dto/user.dto';
 
 @Injectable()
 export class TodosService {
@@ -26,7 +26,7 @@ export class TodosService {
     private readonly todosRepo: Repository<Todo>
   ) {}
 
-  async create(createTodoDto: CreateTodoDto, user: User): Promise<Todo> {
+  async create(createTodoDto: CreateTodoDto, user: UserDto): Promise<Todo> {
     const { title } = createTodoDto;
     const todo = this.todosRepo.create({ ...createTodoDto, user });
 
@@ -83,6 +83,9 @@ export class TodosService {
     userId: number
   ): Promise<Todo> {
     if (isNaN(id)) throw new BadRequestException([this.Responses.ID_NAN]);
+    if (typeof updateTodoDto === 'undefined') {
+      throw new BadRequestException();
+    }
 
     const todo = await this.todosRepo.findOne({
       where: { id },
