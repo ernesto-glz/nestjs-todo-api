@@ -16,6 +16,7 @@ import { sign } from 'jsonwebtoken';
 import { Response } from 'express';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { UserDto } from './dto/user.dto';
+import { UpdateEmailDto } from './dto/update-email.dto';
 
 @Injectable()
 export class UsersService {
@@ -25,7 +26,8 @@ export class UsersService {
     WRONG_USER_OR_PWD: 'Incorrect username or password',
     WRONG_PWD: 'Incorrect password',
     USER_NOT_FOUND: 'User not found',
-    PWD_UPDATED: 'Your password has been updated successfully!'
+    PWD_UPDATED: 'Your password has been updated successfully!',
+    EMAIL_UPDATED: 'Your email has been updated successfully!'
   };
 
   constructor(
@@ -74,17 +76,26 @@ export class UsersService {
     UsersService.createToken(user, HttpStatus.OK, response);
   }
 
-  async updatePassword(
+  async updateEmail(
     userId: number,
+    updateEmailDto: UpdateEmailDto,
+    response: Response
+  ): Promise<void> {
+    const { email } = updateEmailDto;
+
+    await this.userRepo.update(userId, { email });
+
+    response
+      .status(HttpStatus.OK)
+      .send({ status: 'success', message: [this.Responses.EMAIL_UPDATED] });
+  }
+
+  async updatePassword(
+    user: User,
     updatePasswordDto: UpdatePasswordDto,
     response: Response
   ): Promise<void> {
     const { currentPassowrd, password, passwordConfirm } = updatePasswordDto;
-    const user = await this.userRepo.findOne({ id: userId });
-
-    if (!user) {
-      throw new NotFoundException([this.Responses.USER_NOT_FOUND]);
-    }
 
     if (password !== passwordConfirm) {
       throw new UnauthorizedException([this.Responses.PWD_NOT_MATCH]);
@@ -94,7 +105,7 @@ export class UsersService {
       throw new UnauthorizedException([this.Responses.WRONG_PWD]);
     }
 
-    await this.userRepo.update(userId, {
+    await this.userRepo.update(user.id, {
       password: await Misc.hashPassword(password)
     });
 

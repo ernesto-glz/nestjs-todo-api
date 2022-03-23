@@ -17,6 +17,8 @@ import { AuthGuard } from '../shared/auth.guard';
 import { UserDecorator } from './user.decorator';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { UserDto } from './dto/user.dto';
+import { UpdateEmailDto } from './dto/update-email.dto';
+import { User } from './entities/user.entity';
 
 @Controller('users')
 export class UsersController {
@@ -43,17 +45,23 @@ export class UsersController {
     return this.usersService.signIn(loginUserDto, response);
   }
 
-  @Patch('/updatePassword')
+  @Patch('/email')
   @UseGuards(new AuthGuard())
-  findOne(
+  updateEmail(
     @UserDecorator('id') userId: number,
+    @Body(ValidationPipe) updateEmaiDto: UpdateEmailDto,
+    @Res() response: Response
+  ): Promise<void> {
+    return this.usersService.updateEmail(userId, updateEmaiDto, response);
+  }
+
+  @Patch('/password')
+  @UseGuards(new AuthGuard())
+  updatePassword(
+    @UserDecorator() user: User,
     @Body(ValidationPipe) updatePasswordDto: UpdatePasswordDto,
     @Res() response: Response
   ): Promise<void> {
-    return this.usersService.updatePassword(
-      userId,
-      updatePasswordDto,
-      response
-    );
+    return this.usersService.updatePassword(user, updatePasswordDto, response);
   }
 }

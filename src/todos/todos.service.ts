@@ -40,6 +40,7 @@ export class TodosService {
       throw new ConflictException([this.Responses.ALREADY_EXISTS]);
     }
 
+    delete todo.user;
     return await this.todosRepo.save(todo);
   }
 
