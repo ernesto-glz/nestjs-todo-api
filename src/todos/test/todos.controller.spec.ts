@@ -67,13 +67,16 @@ describe('TodosController', () => {
     };
 
     test('should return a created todo', () => {
-      expect(todosController.create(createTodoDto, userStub())).toEqual({
+      const result = todosController.create(createTodoDto, userStub());
+
+      expect(result).toEqual({
         id: expect.any(Number),
         ...createTodoDto,
         ...userStub()
       });
 
       expect(todosService.create).toBeCalledWith(createTodoDto, userStub());
+      expect(todosService.create).toHaveBeenCalledTimes(1);
     });
   });
 

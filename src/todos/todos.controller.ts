@@ -14,8 +14,8 @@ import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { AuthGuard } from '../shared/auth.guard';
 import { UserDecorator } from '../users/user.decorator';
-import { Todo } from './entities/todo.entity';
 import { UserDto } from '../users/dto/user.dto';
+import { TodoDto } from './dto/todo.dto';
 
 @Controller('todos')
 export class TodosController {
@@ -26,13 +26,13 @@ export class TodosController {
   create(
     @Body(ValidationPipe) createTodoDto: CreateTodoDto,
     @UserDecorator() user: UserDto
-  ): Promise<Todo> {
+  ): Promise<TodoDto> {
     return this.todosService.create(createTodoDto, user);
   }
 
   @Get()
   @UseGuards(new AuthGuard())
-  findAll(@UserDecorator('id') userId: number): Promise<Todo[]> {
+  findAll(@UserDecorator('id') userId: number): Promise<TodoDto[]> {
     return this.todosService.findAllByUserId(userId);
   }
 
@@ -41,7 +41,7 @@ export class TodosController {
   findOne(
     @Param('id') id: number,
     @UserDecorator('id') userId: number
-  ): Promise<Todo> {
+  ): Promise<TodoDto> {
     return this.todosService.findOne(id, userId);
   }
 
@@ -51,7 +51,7 @@ export class TodosController {
     @Param('id') id: number,
     @Body(ValidationPipe) updateTodoDto: UpdateTodoDto,
     @UserDecorator('id') userId: number
-  ): Promise<Todo> {
+  ): Promise<TodoDto> {
     return this.todosService.update(id, updateTodoDto, userId);
   }
 
