@@ -15,6 +15,7 @@ import { User } from './entities/user.entity';
 import { sign } from 'jsonwebtoken';
 import { Response } from 'express';
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import { UserDto } from './dto/user.dto';
 
 @Injectable()
 export class UsersService {
@@ -31,7 +32,10 @@ export class UsersService {
     @InjectRepository(User) private readonly userRepo: Repository<User>
   ) {}
 
-  async signUp(createUserDto: CreateUserDto): Promise<User> {
+  async signUp(
+    createUserDto: CreateUserDto,
+    response: Response
+  ): Promise<void> {
     const { username, password, passwordConfirm, email } = createUserDto;
     const newUser = this.userRepo.create();
 
@@ -49,7 +53,9 @@ export class UsersService {
     newUser.password = await Misc.hashPassword(password);
     newUser.email = email;
 
-    return await this.userRepo.save(newUser);
+    const user = await this.userRepo.save(newUser);
+
+    UsersService.createToken(user, HttpStatus.CREATED, response);
   }
 
   async signIn(loginUserDto: LoginUserDto, response: Response): Promise<void> {
@@ -65,9 +71,7 @@ export class UsersService {
       throw new UnauthorizedException([this.Responses.WRONG_USER_OR_PWD]);
     }
 
-    delete user.password;
-
-    UsersService.createToken(user, HttpStatus.CREATED, response);
+    UsersService.createToken(user, HttpStatus.OK, response);
   }
 
   async updatePassword(
@@ -97,6 +101,17 @@ export class UsersService {
     response
       .status(HttpStatus.OK)
       .send({ status: 'success', message: [this.Responses.PWD_UPDATED] });
+  }
+
+  async getUserInfoById(userId: number): Promise<UserDto> {
+    const user = await this.userRepo.findOne({ id: userId });
+
+    if (!user) {
+      throw new NotFoundException([this.Responses.USER_NOT_FOUND]);
+    }
+
+    delete user.password;
+    return user;
   }
 
   private static createToken(

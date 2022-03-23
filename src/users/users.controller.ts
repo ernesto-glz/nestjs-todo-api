@@ -5,7 +5,9 @@ import {
   Patch,
   ValidationPipe,
   Res,
-  UseGuards
+  UseGuards,
+  Get,
+  Param
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -14,15 +16,23 @@ import { Response } from 'express';
 import { AuthGuard } from '../shared/auth.guard';
 import { UserDecorator } from './user.decorator';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import { User } from './entities/user.entity';
+import { UserDto } from './dto/user.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create(@Body(ValidationPipe) createUserDto: CreateUserDto): Promise<User> {
-    return this.usersService.signUp(createUserDto);
+  @Get(':id')
+  getUserInfo(@Param('id') userId: number): Promise<UserDto> {
+    return this.usersService.getUserInfoById(userId);
+  }
+
+  @Post('/signUp')
+  create(
+    @Body(ValidationPipe) createUserDto: CreateUserDto,
+    @Res() response: Response
+  ): Promise<void> {
+    return this.usersService.signUp(createUserDto, response);
   }
 
   @Post('/signIn')
