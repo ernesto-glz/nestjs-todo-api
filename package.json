@@ -1,7 +1,7 @@
 {
-  "name": "nestjs-todos-api",
-  "version": "0.0.1",
-  "description": "",
+  "name": "nestjs-todo-api",
+  "version": "1.0.0",
+  "description": "A RESful API for simple todo application made with Nestjs",
   "author": "KiK0",
   "private": true,
   "license": "MIT",

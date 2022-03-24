@@ -24,8 +24,9 @@ import { User } from './entities/user.entity';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get(':id')
-  getUserInfo(@Param('id') userId: number): Promise<UserDto> {
+  @Get()
+  @UseGuards(new AuthGuard())
+  getUserInfo(@UserDecorator('id') userId: number): Promise<UserDto> {
     return this.usersService.getUserInfoById(userId);
   }
 

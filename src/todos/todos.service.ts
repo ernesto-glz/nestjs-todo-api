@@ -32,16 +32,16 @@ export class TodosService {
     const todo = this.todosRepo.create({ ...createTodoDto, user });
 
     const todoExists = await this.todosRepo.findOne({
-      title,
-      completed: false
+      where: { title, completed: false, user: { id: user.id } }
     });
 
     if (todoExists) {
       throw new ConflictException([this.Responses.ALREADY_EXISTS]);
     }
 
-    delete todo.user;
-    return await this.todosRepo.save(todo);
+    const result = await this.todosRepo.save(todo);
+    delete result.user;
+    return result;
   }
 
   async findAllByUserId(userId: number): Promise<TodoDto[]> {
@@ -85,7 +85,16 @@ export class TodosService {
     userId: number
   ): Promise<TodoDto> {
     if (isNaN(id)) throw new BadRequestException([this.Responses.ID_NAN]);
+
     if (typeof updateTodoDto === 'undefined') {
+      throw new BadRequestException();
+    }
+
+    if (
+      !updateTodoDto.title &&
+      !updateTodoDto.description &&
+      !updateTodoDto.completed
+    ) {
       throw new BadRequestException();
     }
 
