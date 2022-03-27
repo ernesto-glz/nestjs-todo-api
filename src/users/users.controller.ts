@@ -6,8 +6,7 @@ import {
   ValidationPipe,
   Res,
   UseGuards,
-  Get,
-  Param
+  Get
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -50,10 +49,10 @@ export class UsersController {
   @UseGuards(new AuthGuard())
   updateEmail(
     @UserDecorator('id') userId: number,
-    @Body(ValidationPipe) updateEmaiDto: UpdateEmailDto,
+    @Body(ValidationPipe) updateEmailDto: UpdateEmailDto,
     @Res() response: Response
   ): Promise<void> {
-    return this.usersService.updateEmail(userId, updateEmaiDto, response);
+    return this.usersService.updateEmail(userId, updateEmailDto, response);
   }
 
   @Patch('/password')
