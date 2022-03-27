@@ -46,16 +46,8 @@ export class TodosService {
 
   async findAllByUserId(userId: number): Promise<TodoDto[]> {
     const todos = await this.todosRepo.find({
-      where: { user: { id: userId } },
-      relations: ['user']
+      where: { user: { id: userId } }
     });
-
-    if (todos.length) {
-      todos.forEach((todo) => {
-        delete todo.user;
-      });
-    }
-
     return todos;
   }
 
