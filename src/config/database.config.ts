@@ -12,5 +12,5 @@ export const DatabaseConfig: TypeOrmModuleOptions = {
     join(__dirname, '..', 'todos/entities/', '*.entity.{js, ts}'),
     join(__dirname, '..', 'users/entities/', '*.entity.{js, ts}')
   ],
-  synchronize: process.env.NODE_ENV === 'production' ? false : true
+  synchronize: process.env.NODE_ENV !== 'production'
 };

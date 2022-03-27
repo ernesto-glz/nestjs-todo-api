@@ -45,10 +45,9 @@ export class TodosService {
   }
 
   async findAllByUserId(userId: number): Promise<TodoDto[]> {
-    const todos = await this.todosRepo.find({
+    return await this.todosRepo.find({
       where: { user: { id: userId } }
     });
-    return todos;
   }
 
   async findOne(id: number, userId: number): Promise<TodoDto> {

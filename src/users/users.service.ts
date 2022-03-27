@@ -95,13 +95,13 @@ export class UsersService {
     updatePasswordDto: UpdatePasswordDto,
     response: Response
   ): Promise<void> {
-    const { currentPassowrd, password, passwordConfirm } = updatePasswordDto;
+    const { currentPassword, password, passwordConfirm } = updatePasswordDto;
 
     if (password !== passwordConfirm) {
       throw new UnauthorizedException([this.Responses.PWD_NOT_MATCH]);
     }
 
-    if (!(await Misc.checkCredentials(currentPassowrd, user.password))) {
+    if (!(await Misc.checkCredentials(currentPassword, user.password))) {
       throw new UnauthorizedException([this.Responses.WRONG_PWD]);
     }
 
